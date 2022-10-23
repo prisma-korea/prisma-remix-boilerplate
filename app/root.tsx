@@ -6,15 +6,29 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-import type {LinksFunction, MetaFunction} from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node';
 
+import {json} from '@remix-run/node';
+import {remixI18n} from './services/i18n.server';
 import styles from './styles/app.css';
 import {useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
+
+type LoaderData = {locale: string};
+
+export const loader: LoaderFunction = async ({request}) => {
+  const locale = await remixI18n.getLocale(request);
+  return json<LoaderData>({locale});
+};
 
 export const links: LinksFunction = () => {
   return [
     {rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css'},
-    {rel: 'stylesheet', href: styles}
+    {rel: 'stylesheet', href: styles},
   ];
 };
 
@@ -49,8 +63,10 @@ export default function App() {
     // localStorage.removeItem('theme')
   }, []);
 
+  const {i18n} = useTranslation();
+
   return (
-    <html lang="en">
+    <html lang={i18n.language}>
       <head>
         <Meta />
         <Links />
