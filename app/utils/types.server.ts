@@ -6,7 +6,7 @@ export type RegisterForm = {
   lastName: string
 }
 
-export type LoginForm = {
+export type SignInForm = {
   email: string
   password: string
 }

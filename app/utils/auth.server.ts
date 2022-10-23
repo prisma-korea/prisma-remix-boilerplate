@@ -1,4 +1,4 @@
-import type {LoginForm, RegisterForm} from "./types.server";
+import type {RegisterForm, SignInForm} from "./types.server";
 import {createCookieSessionStorage, json, redirect} from "@remix-run/node";
 
 import type {ActionFunction} from "@remix-run/node";
@@ -35,7 +35,7 @@ export async function requireUserId(
   const userId = session.get("userId");
   if (!userId || typeof userId !== "string") {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
+    throw redirect(`/sign-in?${searchParams}`);
   }
   return userId;
 }
@@ -72,7 +72,7 @@ export async function getUser(request: Request) {
 
 export async function logout(request: Request) {
   const session = await getUserSession(request);
-  return redirect("/login", {
+  return redirect("/sign-in", {
     headers: {
       "Set-Cookie": await storage.destroySession(session),
     },
@@ -107,7 +107,7 @@ export async function register(user: RegisterForm) {
   }
 }
 
-export async function login({email, password}: LoginForm) {
+export async function signIn({email, password}: SignInForm) {
   console.log('login', email);
   const user = await prisma.user.findUnique({
     where: {email},

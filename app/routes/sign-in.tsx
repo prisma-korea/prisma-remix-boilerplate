@@ -1,5 +1,5 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
-import {getUser, register, login as signIn} from '../utils/auth.server';
+import {getUser, register, signIn} from '../utils/auth.server';
 import {json, redirect} from '@remix-run/node';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -120,10 +120,10 @@ export default function SignIn() {
     <div className="h-screen w-full bg-white dark:bg-slate-800">
       <div className="h-full justify-center items-center flex flex-col gap-y-4">
         <button
-          onClick={() => setAction(action == 'login' ? 'register' : 'login')}
+          onClick={() => setAction(action == 'sign-in' ? 'register' : 'sign-in')}
           className="absolute top-8 right-8 rounded-xl bg-yellow-300 text-blue-600 px-3 py-2 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
         >
-          {action === 'login' ? 'Sign Up' : 'Sign In'}
+          {action === 'sign-in' ? 'Sign Up' : 'Sign In'}
         </button>
         <form
           method="POST"
