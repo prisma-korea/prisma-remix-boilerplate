@@ -1,19 +1,25 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
-import {getUser, register, signIn} from '../utils/auth.server';
+import {getUser, register, signIn} from '~/utils/auth.server';
 import {json, redirect} from '@remix-run/node';
 import {useEffect, useRef, useState} from 'react';
 import {
   validateEmail,
   validateName,
   validatePassword,
-} from '../utils/validators.server';
+} from '~/utils/validators.server';
 
 import {FormField} from '~/components/form-field';
+import {remixI18n} from '~/services/i18n.server';
 import {useActionData} from '@remix-run/react';
+import {useTranslation} from 'react-i18next';
 
 export const loader: LoaderFunction = async ({request}) => {
-  // If there's already a user in the session, redirect to the home page
-  return (await getUser(request)) ? redirect('/') : null;
+  const user = await getUser(request);
+  const locale = await remixI18n.getLocale(request);
+  const t = await remixI18n.getFixedT(request);
+  const title = t('sign_in');
+
+  return user ? redirect('/') : json({locale, title});
 };
 
 export const action: ActionFunction = async ({request}) => {
@@ -76,12 +82,12 @@ export default function SignIn() {
   const [errors, setErrors] = useState(actionData?.errors || {});
   const [formError, setFormError] = useState(actionData?.error || '');
   const [action, setAction] = useState('sign-in');
+  const {t} = useTranslation();
 
   const [formData, setFormData] = useState({
     email: actionData?.fields?.email || '',
     password: actionData?.fields?.password || '',
-    firstName: actionData?.fields?.lastName || '',
-    lastName: actionData?.fields?.firstName || '',
+    displayName: actionData?.fields?.lastName || '',
   });
 
   useEffect(() => {
@@ -89,9 +95,9 @@ export default function SignIn() {
       const newState = {
         email: '',
         password: '',
-        firstName: '',
-        lastName: '',
+        displayName: '',
       };
+
       setErrors(newState);
       setFormError('');
       setFormData(newState);
@@ -120,7 +126,9 @@ export default function SignIn() {
     <div className="h-screen w-full bg-white dark:bg-slate-800">
       <div className="h-full justify-center items-center flex flex-col gap-y-4">
         <button
-          onClick={() => setAction(action == 'sign-in' ? 'register' : 'sign-in')}
+          onClick={() =>
+            setAction(action == 'sign-in' ? 'register' : 'sign-in')
+          }
           className="
             absolute top-8 right-8
             bg-black dark:bg-white
@@ -128,7 +136,7 @@ export default function SignIn() {
             rounded px-3 py-2 transition duration-300 ease-in-out hover:opacity-70 hover:-translate-y-1
           "
         >
-          {action === 'sign-in' ? 'Sign Up' : 'Sign In'}
+          {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
         </button>
         <form
           method="POST"
@@ -144,7 +152,7 @@ export default function SignIn() {
             text-black dark:text-white
           "
           >
-            Title
+            {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
           </h2>
           <p
             className="
@@ -153,41 +161,38 @@ export default function SignIn() {
             text-black dark:text-white
           "
           >
-            Your app description
+            {
+              (action === 'sign-in'
+                ? t('sign_in_desc')
+                : t('sign_up_desc')) as string
+            }
           </p>
           <FormField
-            className="mb-4"
             htmlFor="email"
-            label="Email"
+            label={t('email') as string}
             value={formData.email}
             onChange={(e) => handleInputChange(e, 'email')}
             error={errors?.email}
           />
           <FormField
+            className="mt-3"
             htmlFor="password"
             type="password"
-            label="Password"
+            label={t('password') as string}
             value={formData.password}
             onChange={(e) => handleInputChange(e, 'password')}
             error={errors?.password}
           />
           {action === 'register' && (
             <>
-              {/* First Name */}
+              {/* Display Name */}
               <FormField
-                htmlFor="firstName"
-                label="First Name"
-                onChange={(e) => handleInputChange(e, 'firstName')}
-                value={formData.firstName}
-                error={errors?.firstName}
-              />
-              {/* Last Name */}
-              <FormField
-                htmlFor="lastName"
-                label="Last Name"
-                onChange={(e) => handleInputChange(e, 'lastName')}
-                value={formData.lastName}
-                error={errors?.lastName}
+                className="mt-3"
+                htmlFor="displayName"
+                label={t('display_name') as string}
+                onChange={(e) => handleInputChange(e, 'displayName')}
+                value={formData.displayName}
+                error={errors?.displayName}
               />
             </>
           )}
@@ -204,12 +209,12 @@ export default function SignIn() {
                 p-4  mt-2 px-3 py-3 text-blue-600 font-semibold transition duration-300 ease-in-out
               "
             >
-              {action === 'sign-in' ? 'Sign In' : 'Sign Up'}
+              {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
             </button>
           </div>
           <div className="w-full text-center mt-6 mb-6">
             <p className=" text-opacity-60 text-center text-black dark:text-white ">
-              Inquiries
+              {t('inquiry') as string}
             </p>
           </div>
         </form>
