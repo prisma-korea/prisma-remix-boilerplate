@@ -1,0 +1,14 @@
+{
+  "TITLE": "Remix Boilerplate",
+  "SIGN_IN": "Sign In",
+  "SIGN_UP": "Sign Up",
+  "USER_ALREADY_EXISTS": "User with email already exists",
+  "SIGN_OUT": "Sign Out",
+  "SIGN_IN_DESC": "Sign in to your account with email and password",
+  "SIGN_UP_DESC": "Sign up to create a new account",
+  "DISPLAY_NAME": "Display Name",
+  "EMAIL": "Email",
+  "PASSWORD": "Password",
+  "INQUIRY": "Inquiry",
+  "BAD_REQUEST": "Bad request"
+}
