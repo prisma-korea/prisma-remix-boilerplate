@@ -11,11 +11,11 @@ import type {
   LoaderFunction,
   MetaFunction,
 } from '@remix-run/node';
+import {useCallback, useEffect, useState} from 'react';
 
 import {json} from '@remix-run/node';
 import {remixI18n} from './services/i18n.server';
 import styles from './styles/app.css';
-import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
 type LoaderData = {locale: string};
@@ -34,39 +34,64 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'New Remix App',
+  title: 'Remix Boilerplate',
   viewport: 'width=device-width,initial-scale=1',
 });
 
 export default function App() {
-  useEffect(() => {
-    // On page load or when changing themes, best to add inline in `head` to avoid
-    // if (
-    //   localStorage.theme === 'dark' ||
-    //   (!('theme' in localStorage) &&
-    //     window.matchMedia('(prefers-color-scheme: dark)').matches)
-    // ) {
-    //   console.log('is dark');
-    //   document.documentElement.classList.add('dark');
-    // } else {
-    //   console.log('is light');
-    //   document.documentElement.classList.remove('dark');
-    // }
+  type Brightness = 'light' | 'dark';
+  const [brightness, setBrightness] = useState<Brightness>('light');
 
-    // // Whenever the user explicitly chooses light mode
-    // localStorage.theme = 'light'
+  const toggleTheme = useCallback((brightness: Brightness) => {
+    if (brightness === 'light') {
+      document.documentElement.classList.add('light');
+      localStorage.theme = 'light';
+      setBrightness('light');
+      return;
+    }
 
-    // // Whenever the user explicitly chooses dark mode
-    // localStorage.theme = 'dark'
-
-    // // Whenever the user explicitly chooses to respect the OS preference
-    // localStorage.removeItem('theme')
+    document.documentElement.classList.add('dark');
+    localStorage.theme = 'dark';
+    setBrightness('dark');
   }, []);
+
+  useEffect(() => {
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      toggleTheme('light');
+      return;
+    }
+
+    toggleTheme('dark');
+
+    // Whenever the user explicitly chooses to respect the OS preference
+    // localStorage.removeItem('theme');
+  }, [toggleTheme]);
+
+  useEffect(() => {
+    (() => {
+      document.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === '.') {
+          console.log('key event .');
+          // On page load or when changing themes, best to add inline in `head` to avoid
+          setBrightness(brightness === 'light' ? 'dark' : 'light');
+          console.log('theme', brightness);
+        }
+      });
+    })();
+
+    return () => {
+      document.removeEventListener('keydown', () => {});
+    };
+  }, [brightness]);
 
   const {i18n} = useTranslation();
 
   return (
-    <html lang={i18n.language}>
+    <html lang={i18n.language} className={brightness}>
       <head>
         <Meta />
         <Links />
