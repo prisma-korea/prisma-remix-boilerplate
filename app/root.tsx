@@ -75,10 +75,7 @@ export default function App() {
     (() => {
       document.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === '.') {
-          console.log('key event .');
-          // On page load or when changing themes, best to add inline in `head` to avoid
           setBrightness(brightness === 'light' ? 'dark' : 'light');
-          console.log('theme', brightness);
         }
       });
     })();
