@@ -4,6 +4,7 @@ import {createCookieSessionStorage, json, redirect} from '@remix-run/node';
 import type {ActionFunction} from '@remix-run/node';
 import bcrypt from 'bcryptjs';
 import {createUser} from './user.server';
+import i18next from 'i18next';
 import {prisma} from './prisma.server';
 
 export const action: ActionFunction = async ({request}) => {};
@@ -79,14 +80,14 @@ export async function logout(request: Request) {
 export async function register(user: RegisterForm) {
   const exists = await prisma.user.count({where: {email: user.email}});
   if (exists) {
-    return json({error: `User already exists with that email`}, {status: 400});
+    return json({error: i18next.t('USER_ALREADY_EXISTS')}, {status: 400});
   }
 
   const newUser = await createUser(user);
   if (!newUser) {
     return json(
       {
-        error: `Something went wrong trying to create a new user.`,
+        error: i18next.t('BAD_REQUEST'),
         fields: {email: user.email, password: user.password},
       },
       {status: 400},

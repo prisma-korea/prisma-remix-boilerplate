@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({request}) => {
       return await register({email, password, displayName});
     }
     default:
-      return json({error: `Invalid Form Data`}, {status: 400});
+      return json({error: t('BAD_REQUEST')}, {status: 400});
   }
 };
 
@@ -147,10 +147,10 @@ export default function SignIn() {
           </h2>
           <p
             className="
-            text-opacity-60 mb-12
-            text-center
-            text-black dark:text-white
-          "
+              text-opacity-60 mb-12
+              text-center
+              text-black dark:text-white
+            "
           >
             {
               (action === 'sign-in'
