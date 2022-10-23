@@ -1,11 +1,12 @@
 {
-  "title": "Remix Boilerplate",
-  "sign_in": "Sign In",
-  "sign_up": "Sign Up",
-  "sign_in_desc": "Sign in to your account with email and password",
-  "sign_up_desc": "Sign up to create a new account",
-  "display_name": "Display Name",
-  "email": "Email",
-  "password": "Password",
-  "inquiry": "Inquiry"
+  "TITLE": "Remix Boilerplate",
+  "SIGN_IN": "Sign In",
+  "SIGN_UP": "Sign Up",
+  "SIGN_IN_DESC": "Sign in to your account with email and password",
+  "SIGN_UP_DESC": "Sign up to create a new account",
+  "DISPLAY_NAME": "Display Name",
+  "EMAIL": "Email",
+  "PASSWORD": "Password",
+  "INQUIRY": "Inquiry",
+  "BAD_REQUEST": "Bad request"
 }

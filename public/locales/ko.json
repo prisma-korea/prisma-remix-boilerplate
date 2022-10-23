@@ -1,11 +1,12 @@
 {
-  "title": "리믹스 스타터",
-  "sign_in": "로그인",
-  "sign_up": "회원가입",
-  "sign_in_desc": "이메일과 비밀번호로 로그인 해주세요",
-  "sign_up_desc": "새 계정을 만들려면 가입하세요",
-  "display_name": "닉네임",
-  "email": "이메일",
-  "password": "비밀번호",
-  "inquiry": "문의사항"
+  "TITLE": "리믹스 스타터",
+  "SIGN_IN": "로그인",
+  "SIGN_UP": "회원가입",
+  "SIGN_IN_DESC": "이메일과 비밀번호로 로그인 해주세요",
+  "SIGN_UP_DESC": "새 계정을 만들려면 가입하세요",
+  "DISPLAY_NAME": "닉네임",
+  "EMAIL": "이메일",
+  "PASSWORD": "비밀번호",
+  "INQUIRY": "문의사항",
+  "BAD_REQUEST": "잘못된 요청"
 }

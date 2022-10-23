@@ -1,5 +1,6 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
 import {getUser, register, signIn} from '~/utils/auth.server';
+import i18next, {t} from 'i18next';
 import {json, redirect} from '@remix-run/node';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -9,17 +10,13 @@ import {
 } from '~/utils/validators.server';
 
 import {FormField} from '~/components/form-field';
-import {remixI18n} from '~/services/i18n.server';
 import {useActionData} from '@remix-run/react';
 import {useTranslation} from 'react-i18next';
 
 export const loader: LoaderFunction = async ({request}) => {
   const user = await getUser(request);
-  const locale = await remixI18n.getLocale(request);
-  const t = await remixI18n.getFixedT(request);
-  const title = t('sign_in');
 
-  return user ? redirect('/') : json({locale, title});
+  return user ? redirect('/') : null;
 };
 
 export const action: ActionFunction = async ({request}) => {
@@ -27,22 +24,18 @@ export const action: ActionFunction = async ({request}) => {
   const action = form.get('_action');
   const email = form.get('email');
   const password = form.get('password');
-  let firstName = form.get('firstName');
-  let lastName = form.get('lastName');
+  let displayName = form.get('displayName');
 
   if (
     typeof action !== 'string' ||
     typeof email !== 'string' ||
     typeof password !== 'string'
   ) {
-    return json({error: `Invalid Form Data`, form: action}, {status: 400});
+    return json({error: i18next.t('bad_request'), form: action}, {status: 400});
   }
 
-  if (
-    action === 'register' &&
-    (typeof firstName !== 'string' || typeof lastName !== 'string')
-  ) {
-    return json({error: `Invalid Form Data`, form: action}, {status: 400});
+  if (action === 'register' && typeof displayName !== 'string') {
+    return json({error: t('BAD_REQUEST'), form: action}, {status: 400});
   }
 
   const errors = {
@@ -50,15 +43,14 @@ export const action: ActionFunction = async ({request}) => {
     password: validatePassword(password),
     ...(action === 'register'
       ? {
-          firstName: validateName((firstName as string) || ''),
-          lastName: validateName((lastName as string) || ''),
+          displayName: validateName((displayName as string) || ''),
         }
       : {}),
   };
 
   if (Object.values(errors).some(Boolean))
     return json(
-      {errors, fields: {email, password, firstName, lastName}, form: action},
+      {errors, fields: {email, password, displayName}, form: action},
       {status: 400},
     );
 
@@ -67,9 +59,8 @@ export const action: ActionFunction = async ({request}) => {
       return await signIn({email, password});
     }
     case 'register': {
-      firstName = firstName as string;
-      lastName = lastName as string;
-      return await register({email, password, firstName, lastName});
+      displayName = displayName as string;
+      return await register({email, password, displayName});
     }
     default:
       return json({error: `Invalid Form Data`}, {status: 400});
@@ -136,7 +127,7 @@ export default function SignIn() {
             rounded px-3 py-2 transition duration-300 ease-in-out hover:opacity-70 hover:-translate-y-1
           "
         >
-          {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
+          {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
         </button>
         <form
           method="POST"
@@ -152,7 +143,7 @@ export default function SignIn() {
             text-black dark:text-white
           "
           >
-            {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
+            {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
           </h2>
           <p
             className="
@@ -163,8 +154,8 @@ export default function SignIn() {
           >
             {
               (action === 'sign-in'
-                ? t('sign_in_desc')
-                : t('sign_up_desc')) as string
+                ? t('SIGN_IN_DESC')
+                : t('SIGN_UP_DESC')) as string
             }
           </p>
           <FormField
@@ -209,12 +200,12 @@ export default function SignIn() {
                 p-4  mt-2 px-3 py-3 text-blue-600 font-semibold transition duration-300 ease-in-out
               "
             >
-              {(action === 'sign-in' ? t('sign_in') : t('sign_up')) as string}
+              {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
             </button>
           </div>
           <div className="w-full text-center mt-6 mb-6">
             <p className=" text-opacity-60 text-center text-black dark:text-white ">
-              {t('inquiry') as string}
+              {t('INQUIRY') as string}
             </p>
           </div>
         </form>
