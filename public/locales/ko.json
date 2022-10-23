@@ -2,6 +2,7 @@
   "TITLE": "리믹스 스타터",
   "SIGN_IN": "로그인",
   "SIGN_UP": "회원가입",
+  "SIGN_OUT": "로그아웃",
   "SIGN_IN_DESC": "이메일과 비밀번호로 로그인 해주세요",
   "SIGN_UP_DESC": "새 계정을 만들려면 가입하세요",
   "DISPLAY_NAME": "닉네임",

@@ -40,19 +40,14 @@ export const meta: MetaFunction = () => ({
 
 export default function App() {
   type Brightness = 'light' | 'dark';
-  const [brightness, setBrightness] = useState<Brightness>('light');
+  const [brightness, setBrightness] = useState<Brightness | null>();
+
+  console.log('brightness1', brightness);
 
   const toggleTheme = useCallback((brightness: Brightness) => {
-    if (brightness === 'light') {
-      document.documentElement.classList.add('light');
-      localStorage.theme = 'light';
-      setBrightness('light');
-      return;
-    }
-
-    document.documentElement.classList.add('dark');
-    localStorage.theme = 'dark';
-    setBrightness('dark');
+    document.documentElement.classList.add(brightness);
+    localStorage.theme = brightness;
+    setBrightness(brightness);
   }, []);
 
   useEffect(() => {
@@ -61,11 +56,11 @@ export default function App() {
       (!('theme' in localStorage) &&
         window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
-      toggleTheme('light');
+      toggleTheme('dark');
       return;
     }
 
-    toggleTheme('dark');
+    toggleTheme('light');
 
     // Whenever the user explicitly chooses to respect the OS preference
     // localStorage.removeItem('theme');
@@ -75,7 +70,7 @@ export default function App() {
     (() => {
       document.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === '.') {
-          setBrightness(brightness === 'light' ? 'dark' : 'light');
+          toggleTheme(brightness === 'light' ? 'dark' : 'light')
         }
       });
     })();
@@ -83,12 +78,12 @@ export default function App() {
     return () => {
       document.removeEventListener('keydown', () => {});
     };
-  }, [brightness]);
+  }, [brightness, toggleTheme]);
 
   const {i18n} = useTranslation();
 
   return (
-    <html lang={i18n.language} className={brightness}>
+    <html lang={i18n.language} className={brightness || 'light'}>
       <head>
         <Meta />
         <Links />
