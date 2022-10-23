@@ -22,8 +22,8 @@ export const loader: LoaderFunction = async ({request}) => {
 export const action: ActionFunction = async ({request}) => {
   const form = await request.formData();
   const action = form.get('_action');
-  const email = form.get('email');
-  const password = form.get('password');
+  const email = form.get('EMAIL');
+  const password = form.get('PASSWORD');
   let displayName = form.get('displayName');
 
   if (
@@ -31,7 +31,7 @@ export const action: ActionFunction = async ({request}) => {
     typeof email !== 'string' ||
     typeof password !== 'string'
   ) {
-    return json({error: i18next.t('bad_request'), form: action}, {status: 400});
+    return json({error: i18next.t('BAD_REQUEST'), form: action}, {status: 400});
   }
 
   if (action === 'register' && typeof displayName !== 'string') {
@@ -138,19 +138,17 @@ export default function SignIn() {
           </div>
           <h2
             className="
-            text-5xl mb-2
-            text-center
-            text-black dark:text-white
-          "
+              text-5xl mb-4
+              text-center
+              text-black dark:text-white
+            "
           >
             {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
           </h2>
           <p
             className="
-              text-opacity-60 mb-12
-              text-center
-              text-black dark:text-white
-            "
+              text-opacity-60 mb-12 text-center 
+              text-black dark:text-white "
           >
             {
               (action === 'sign-in'
@@ -160,7 +158,7 @@ export default function SignIn() {
           </p>
           <FormField
             htmlFor="email"
-            label={t('email') as string}
+            label={t('EMAIL') as string}
             value={formData.email}
             onChange={(e) => handleInputChange(e, 'email')}
             error={errors?.email}
@@ -169,7 +167,7 @@ export default function SignIn() {
             className="mt-3"
             htmlFor="password"
             type="password"
-            label={t('password') as string}
+            label={t('PASSWORD') as string}
             value={formData.password}
             onChange={(e) => handleInputChange(e, 'password')}
             error={errors?.password}
@@ -180,7 +178,7 @@ export default function SignIn() {
               <FormField
                 className="mt-3"
                 htmlFor="displayName"
-                label={t('display_name') as string}
+                label={t('DISPLAY_NAME') as string}
                 onChange={(e) => handleInputChange(e, 'displayName')}
                 value={formData.displayName}
                 error={errors?.displayName}

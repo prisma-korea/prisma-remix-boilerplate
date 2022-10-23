@@ -1,10 +1,10 @@
 import type {RegisterForm, SignInForm} from './types.server';
 import {createCookieSessionStorage, json, redirect} from '@remix-run/node';
+import i18next, {t} from 'i18next';
 
 import type {ActionFunction} from '@remix-run/node';
 import bcrypt from 'bcryptjs';
 import {createUser} from './user.server';
-import i18next from 'i18next';
 import {prisma} from './prisma.server';
 
 export const action: ActionFunction = async ({request}) => {};
@@ -102,7 +102,7 @@ export async function signIn({email, password}: SignInForm) {
   });
 
   if (!user || !(await bcrypt.compare(password, user.password)))
-    return json({error: `Incorrect login`}, {status: 400});
+    return json({error: t('BAD_REQUEST')}, {status: 400});
 
   return createUserSession(user.id, '/');
 }
