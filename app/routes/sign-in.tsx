@@ -22,8 +22,8 @@ export const loader: LoaderFunction = async ({request}) => {
 export const action: ActionFunction = async ({request}) => {
   const form = await request.formData();
   const action = form.get('_action');
-  const email = form.get('EMAIL');
-  const password = form.get('PASSWORD');
+  const email = form.get('email');
+  const password = form.get('password');
   let displayName = form.get('displayName');
 
   if (
@@ -130,6 +130,7 @@ export default function SignIn() {
           {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
         </button>
         <form
+          action="sign-in"
           method="POST"
           className="px-8 py-16 w-96 border-transparent border-2 rounded shadow-xl"
         >
