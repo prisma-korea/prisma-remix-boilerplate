@@ -1,4 +1,5 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
+import {Form, useActionData} from '@remix-run/react';
 import {getUser, register, signIn} from '~/utils/auth.server';
 import i18next, {t} from 'i18next';
 import {json, redirect} from '@remix-run/node';
@@ -9,8 +10,7 @@ import {
   validatePassword,
 } from '~/utils/validators.server';
 
-import {FormField} from '~/components/form-field';
-import {useActionData} from '@remix-run/react';
+import {EditText} from '../components/edit-text';
 import {useTranslation} from 'react-i18next';
 
 export const loader: LoaderFunction = async ({request}) => {
@@ -75,12 +75,6 @@ export default function SignIn() {
   const [action, setAction] = useState('sign-in');
   const {t} = useTranslation();
 
-  const [formData, setFormData] = useState({
-    email: actionData?.fields?.email || '',
-    password: actionData?.fields?.password || '',
-    displayName: actionData?.fields?.lastName || '',
-  });
-
   useEffect(() => {
     if (!firstLoad.current) {
       const newState = {
@@ -91,7 +85,6 @@ export default function SignIn() {
 
       setErrors(newState);
       setFormError('');
-      setFormData(newState);
     }
   }, [action]);
 
@@ -99,19 +92,11 @@ export default function SignIn() {
     if (!firstLoad.current) {
       setFormError('');
     }
-  }, [formData]);
+  }, []);
 
   useEffect(() => {
     firstLoad.current = false;
   }, []);
-
-  // Updates the form data when an input changes
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    field: string,
-  ) => {
-    setFormData((form) => ({...form, [field]: event.target.value}));
-  };
 
   return (
     <div className="h-screen w-full bg-white dark:bg-slate-800">
@@ -129,9 +114,8 @@ export default function SignIn() {
         >
           {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
         </button>
-        <form
-          action="sign-in"
-          method="POST"
+        <Form
+          method="post"
           className="px-8 py-16 w-96 border-transparent border-2 rounded shadow-xl"
         >
           <div className="text-xs text-center tracking-wide text-red-500 w-full">
@@ -157,31 +141,28 @@ export default function SignIn() {
                 : t('SIGN_UP_DESC')) as string
             }
           </p>
-          <FormField
+          <EditText
             htmlFor="email"
             label={t('EMAIL') as string}
-            value={formData.email}
-            onChange={(e) => handleInputChange(e, 'email')}
+            value=""
             error={errors?.email}
           />
-          <FormField
+          <EditText
             className="mt-3"
             htmlFor="password"
             type="password"
             label={t('PASSWORD') as string}
-            value={formData.password}
-            onChange={(e) => handleInputChange(e, 'password')}
+            value=""
             error={errors?.password}
           />
           {action === 'register' && (
             <>
               {/* Display Name */}
-              <FormField
+              <EditText
                 className="mt-3"
                 htmlFor="displayName"
                 label={t('DISPLAY_NAME') as string}
-                onChange={(e) => handleInputChange(e, 'displayName')}
-                value={formData.displayName}
+                value=""
                 error={errors?.displayName}
               />
             </>
@@ -207,7 +188,7 @@ export default function SignIn() {
               {t('INQUIRY') as string}
             </p>
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );
