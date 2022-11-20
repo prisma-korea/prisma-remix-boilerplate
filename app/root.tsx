@@ -1,3 +1,9 @@
+import type {
+  ErrorBoundaryComponent,
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -5,14 +11,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from '@remix-run/react';
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from '@remix-run/node';
 import {useCallback, useEffect, useState} from 'react';
 
+import type {CatchBoundaryComponent} from '@remix-run/react/dist/routeModules';
 import {json} from '@remix-run/node';
 import {remixI18n} from './services/i18n.server';
 import styles from './styles/app.css';
@@ -38,11 +41,9 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1',
 });
 
-export default function App() {
+function Document({children, title}: {children: JSX.Element; title: string}) {
   type Brightness = 'light' | 'dark';
   const [brightness, setBrightness] = useState<Brightness | null>();
-
-  console.log('brightness1', brightness);
 
   const toggleTheme = useCallback((brightness: Brightness) => {
     document.documentElement.classList.add(brightness);
@@ -70,7 +71,7 @@ export default function App() {
     (() => {
       document.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === '.') {
-          toggleTheme(brightness === 'light' ? 'dark' : 'light')
+          toggleTheme(brightness === 'light' ? 'dark' : 'light');
         }
       });
     })();
@@ -85,15 +86,57 @@ export default function App() {
   return (
     <html lang={i18n.language} className={brightness || 'light'}>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>{title}</title>
         <Meta />
         <Links />
       </head>
       <body className="bg-white dark:bg-slate-800">
-        <Outlet />
+        {children}
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>
     </html>
   );
 }
+
+export default function App() {
+  return (
+    <Document title="Remix boilerplate">
+      <Outlet />
+    </Document>
+  );
+}
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.error('error', error);
+  }
+
+  return (
+    <Document title="An Error occurred">
+      <div>
+        <h1>
+          {error.stack} {error.message}
+        </h1>
+      </div>
+    </Document>
+  );
+};
+
+export const CatchBoundary: CatchBoundaryComponent = () => {
+  const caught = useCatch();
+
+  return (
+    <Document title={`${caught.status} ${caught.statusText}`}>
+      <div>
+        <h1>
+          {caught.status} {caught.statusText}
+        </h1>
+        <p>{caught.data}</p>
+      </div>
+    </Document>
+  );
+};
