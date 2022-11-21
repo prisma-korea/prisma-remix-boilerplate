@@ -31,11 +31,17 @@ export const action: ActionFunction = async ({request}) => {
     typeof email !== 'string' ||
     typeof password !== 'string'
   ) {
-    return json({error: i18next.t('BAD_REQUEST'), form: action}, {status: 400});
+    return json(
+      {error: i18next.t('translation:BAD_REQUEST'), form: action},
+      {status: 400},
+    );
   }
 
   if (action === 'register' && typeof displayName !== 'string') {
-    return json({error: t('BAD_REQUEST'), form: action}, {status: 400});
+    return json(
+      {error: t('translation:BAD_REQUEST'), form: action},
+      {status: 400},
+    );
   }
 
   const errors = {
@@ -63,7 +69,7 @@ export const action: ActionFunction = async ({request}) => {
       return await register({email, password, displayName});
     }
     default:
-      return json({error: t('BAD_REQUEST')}, {status: 400});
+      return json({error: t('translation:BAD_REQUEST')}, {status: 400});
   }
 };
 
@@ -113,7 +119,7 @@ export default function SignIn() {
             rounded px-3 py-2 transition duration-300 ease-in-out hover:opacity-70 hover:-translate-y-1
           "
         >
-          {(action === 'sign-in' ? t('SIGN_UP') : t('SIGN_IN')) as string}
+          {action === 'sign-in' ? t('SIGN_UP') : t('SIGN_IN')}
         </button>
         <Form
           method="post"
@@ -129,29 +135,21 @@ export default function SignIn() {
               text-black dark:text-white
             "
           >
-            {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
+            {action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')}
           </h2>
           <p
             className="
               text-opacity-60 mb-12 text-center 
               text-black dark:text-white "
           >
-            {
-              (action === 'sign-in'
-                ? t('SIGN_IN_DESC')
-                : t('SIGN_UP_DESC')) as string
-            }
+            {action === 'sign-in' ? t('SIGN_IN_DESC') : t('SIGN_UP_DESC')}
           </p>
-          <EditText
-            htmlFor="email"
-            label={t('EMAIL') as string}
-            error={errors?.email}
-          />
+          <EditText htmlFor="email" label={t('EMAIL')} error={errors?.email} />
           <EditText
             className="mt-3"
             htmlFor="password"
             type="password"
-            label={t('PASSWORD') as string}
+            label={t('PASSWORD')}
             error={errors?.password}
           />
           {action === 'register' && (
@@ -160,7 +158,7 @@ export default function SignIn() {
               <EditText
                 className="mt-3"
                 htmlFor="displayName"
-                label={t('DISPLAY_NAME') as string}
+                label={t('DISPLAY_NAME')}
                 error={errors?.displayName}
               />
             </>
@@ -178,12 +176,12 @@ export default function SignIn() {
                 p-4  mt-2 px-3 py-3 text-blue-600 font-semibold transition duration-300 ease-in-out
               "
             >
-              {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
+              {action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')}
             </button>
           </div>
           <div className="w-full text-center mt-6 mb-6">
             <p className=" text-opacity-60 text-center text-black dark:text-white ">
-              {t('INQUIRY') as string}
+              {t('INQUIRY')}
             </p>
           </div>
           {trans.state !== 'idle' && 'loading...'}

@@ -5,11 +5,11 @@ import ko from '../public/locales/ko.json';
 export const resources = {
   en: {translation: en},
   ko: {translation: ko},
-};
+} as const;
 
 export const defaultNS = 'translation';
 
-export const i18nConfig: Omit<InitOptions, "react" | "detection"> | null = {
+export const i18nConfig: Omit<InitOptions, 'react' | 'detection'> | null = {
   fallbackLng: 'en',
   debug: true,
   supportedLngs: ['en', 'ko'],
@@ -21,4 +21,4 @@ export const i18nConfig: Omit<InitOptions, "react" | "detection"> | null = {
     escapeValue: false, // not needed for react as it escapes by default
   },
   resources,
-}
+};
