@@ -58,7 +58,7 @@ export default function Index() {
       <Form action="/actions/logout" method="post">
         <button
           type="submit"
-          value={t('SIGN_OUT') as string}
+          value={t('SIGN_IN')}
           className="
             text-white dark:text-black
             bg-black dark:bg-white
@@ -67,7 +67,7 @@ export default function Index() {
             p-4  mt-8 px-8 py-3 text-blue-600 font-semibold transition duration-300 ease-in-out
           "
         >
-          {t('SIGN_OUT') as string}
+          {t('SIGN_OUT')}
         </button>
       </Form>
     </div>
