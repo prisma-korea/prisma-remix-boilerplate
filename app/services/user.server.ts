@@ -15,8 +15,6 @@ const createUser = async (
     },
   });
 
-  console.log('usernew', newUser);
-
   return {id: newUser.id, email: user.email};
 };
 
