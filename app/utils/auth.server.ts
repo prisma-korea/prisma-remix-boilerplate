@@ -1,11 +1,11 @@
-import type {RegisterForm, SignInForm} from './types.server';
+import type {RegisterForm, SignInForm} from '../types';
 import {createCookieSessionStorage, json, redirect} from '@remix-run/node';
 import i18next, {t} from 'i18next';
 
 import type {ActionFunction} from '@remix-run/node';
 import bcrypt from 'bcryptjs';
-import {createUser} from './user.server';
 import {prisma} from './prisma.server';
+import {userService} from '../services/user.server';
 
 export const action: ActionFunction = async ({request}) => {};
 
@@ -83,7 +83,7 @@ export async function register(user: RegisterForm) {
     return json({error: i18next.t('USER_ALREADY_EXISTS')}, {status: 400});
   }
 
-  const newUser = await createUser(user);
+  const newUser = await userService.createUser(user);
   if (!newUser) {
     return json(
       {

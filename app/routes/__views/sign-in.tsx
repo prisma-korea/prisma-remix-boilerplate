@@ -1,5 +1,5 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
-import {Form, useActionData} from '@remix-run/react';
+import {Form, useActionData, useTransition} from '@remix-run/react';
 import {getUser, register, signIn} from '~/utils/auth.server';
 import i18next, {t} from 'i18next';
 import {json, redirect} from '@remix-run/node';
@@ -8,9 +8,9 @@ import {
   validateEmail,
   validateName,
   validatePassword,
-} from '~/utils/validators.server';
+} from '~/utils/validators';
 
-import {EditText} from '../components/edit-text';
+import {EditText} from '../../components/edit-text';
 import {useTranslation} from 'react-i18next';
 
 export const loader: LoaderFunction = async ({request}) => {
@@ -68,6 +68,7 @@ export const action: ActionFunction = async ({request}) => {
 };
 
 export default function SignIn() {
+  const trans = useTransition();
   const actionData = useActionData();
   const firstLoad = useRef(true);
   const [errors, setErrors] = useState(actionData?.errors || {});
@@ -112,7 +113,7 @@ export default function SignIn() {
             rounded px-3 py-2 transition duration-300 ease-in-out hover:opacity-70 hover:-translate-y-1
           "
         >
-          {(action === 'sign-in' ? t('SIGN_IN') : t('SIGN_UP')) as string}
+          {(action === 'sign-in' ? t('SIGN_UP') : t('SIGN_IN')) as string}
         </button>
         <Form
           method="post"
@@ -144,7 +145,6 @@ export default function SignIn() {
           <EditText
             htmlFor="email"
             label={t('EMAIL') as string}
-            value=""
             error={errors?.email}
           />
           <EditText
@@ -152,7 +152,6 @@ export default function SignIn() {
             htmlFor="password"
             type="password"
             label={t('PASSWORD') as string}
-            value=""
             error={errors?.password}
           />
           {action === 'register' && (
@@ -162,7 +161,6 @@ export default function SignIn() {
                 className="mt-3"
                 htmlFor="displayName"
                 label={t('DISPLAY_NAME') as string}
-                value=""
                 error={errors?.displayName}
               />
             </>
@@ -188,6 +186,7 @@ export default function SignIn() {
               {t('INQUIRY') as string}
             </p>
           </div>
+          {trans.state !== 'idle' && 'loading...'}
         </Form>
       </div>
     </div>

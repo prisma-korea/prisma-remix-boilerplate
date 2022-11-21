@@ -1,10 +1,19 @@
+import {Form, useLoaderData} from '@remix-run/react';
+
 import type {LoaderFunction} from '@remix-run/node';
+import type {User} from '@prisma/client';
 import {json} from '@remix-run/node';
 import {prisma} from '~/utils/prisma.server';
-import {remixI18n} from '../services/i18n.server';
-import {requireUserId} from '../utils/auth.server';
-import {useLoaderData} from '@remix-run/react';
+import {redirect} from '@remix-run/node';
+import {remixI18n} from '../../services/i18n.server';
+import {requireUserId} from '../../utils/auth.server';
 import {useTranslation} from 'react-i18next';
+
+type LoaderData = {
+  user: User;
+  locale: string;
+  title: string;
+};
 
 export const loader: LoaderFunction = async ({request}) => {
   const userId = await requireUserId(request);
@@ -13,18 +22,20 @@ export const loader: LoaderFunction = async ({request}) => {
     where: {id: userId},
   });
 
+  if (!user) {
+    return redirect('/sign-in');
+  }
+
   const locale = await remixI18n.getLocale(request);
   const t = await remixI18n.getFixedT(request);
   const title = t('TITLE');
 
-  return json({locale, title, user});
+  return json<LoaderData>({locale, title, user});
 };
 
 export default function Index() {
-  const data = useLoaderData();
+  const {title, user} = useLoaderData<LoaderData>();
   const {t} = useTranslation();
-
-  console.log('data', data);
 
   return (
     <div
@@ -38,10 +49,13 @@ export default function Index() {
           text-black dark:text-white text-5xl
         "
       >
-        {t('TITLE') as string}
+        {title}
       </h2>
 
-      <form action="logout" method="POST">
+      <div>
+        <h2>Hello {user.email}</h2>
+      </div>
+      <Form action="/actions/logout" method="post">
         <button
           type="submit"
           value={t('SIGN_OUT') as string}
@@ -55,7 +69,7 @@ export default function Index() {
         >
           {t('SIGN_OUT') as string}
         </button>
-      </form>
+      </Form>
     </div>
   );
 }
