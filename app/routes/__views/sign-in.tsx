@@ -1,7 +1,6 @@
 import type {ActionFunction, LoaderFunction} from '@remix-run/node';
 import {Form, useActionData, useTransition} from '@remix-run/react';
 import {getUser, register, signIn} from '~/utils/auth.server';
-import i18next, {t} from 'i18next';
 import {json, redirect} from '@remix-run/node';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 } from '~/utils/validators';
 
 import {EditText} from '../../components/edit-text';
+import {remixI18n} from '../../services/i18n.server';
 import {useTranslation} from 'react-i18next';
 
 export const loader: LoaderFunction = async ({request}) => {
@@ -26,22 +26,18 @@ export const action: ActionFunction = async ({request}) => {
   const password = form.get('password');
   let displayName = form.get('displayName');
 
+  const t = await remixI18n.getFixedT(request);
+
   if (
     typeof action !== 'string' ||
     typeof email !== 'string' ||
     typeof password !== 'string'
   ) {
-    return json(
-      {error: i18next.t('translation:BAD_REQUEST'), form: action},
-      {status: 400},
-    );
+    return json({error: t('BAD_REQUEST'), form: action}, {status: 400});
   }
 
   if (action === 'register' && typeof displayName !== 'string') {
-    return json(
-      {error: t('translation:BAD_REQUEST'), form: action},
-      {status: 400},
-    );
+    return json({error: t('BAD_REQUEST'), form: action}, {status: 400});
   }
 
   const errors = {
@@ -69,7 +65,7 @@ export const action: ActionFunction = async ({request}) => {
       return await register({email, password, displayName});
     }
     default:
-      return json({error: t('translation:BAD_REQUEST')}, {status: 400});
+      return json({error: t('BAD_REQUEST')}, {status: 400});
   }
 };
 
