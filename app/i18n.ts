@@ -11,7 +11,7 @@ export const defaultNS = 'translation';
 
 export const i18nConfig: Omit<InitOptions, 'react' | 'detection'> | null = {
   fallbackLng: 'en',
-  debug: true,
+  debug: false,
   supportedLngs: ['en', 'ko'],
   ns: ['translation'],
   defaultNS,

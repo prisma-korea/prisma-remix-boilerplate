@@ -80,14 +80,17 @@ export async function logout(request: Request) {
 export async function register(user: RegisterForm) {
   const exists = await prisma.user.count({where: {email: user.email}});
   if (exists) {
-    return json({error: i18next.t('USER_ALREADY_EXISTS')}, {status: 400});
+    return json(
+      {error: i18next.t('translation:USER_ALREADY_EXISTS')},
+      {status: 400},
+    );
   }
 
   const newUser = await userService.createUser(user);
   if (!newUser) {
     return json(
       {
-        error: i18next.t('BAD_REQUEST'),
+        error: i18next.t('translation:BAD_REQUEST'),
         fields: {email: user.email, password: user.password},
       },
       {status: 400},
@@ -102,7 +105,7 @@ export async function signIn({email, password}: SignInForm) {
   });
 
   if (!user || !(await bcrypt.compare(password, user.password)))
-    return json({error: t('BAD_REQUEST')}, {status: 400});
+    return json({error: t('translation:BAD_REQUEST')}, {status: 400});
 
   return createUserSession(user.id, '/');
 }
