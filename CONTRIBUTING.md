@@ -9,7 +9,7 @@
 - [Export functions](#-Export-functions)
   - [Case 1](#-Case--1)
   - [Case 2](#-Case--2)
-- [The component rules](#-The-component-rules)
+- [UI component rules](#-UI-component-rules)
 - [Type declaration](#-Type-declaration)
 
 ## Naming
@@ -136,7 +136,7 @@
 
 ## Declaration variables
 
-Write `const` as possible as you can. Use `let` when you need to reassign a variable.
+- Write `const` as possible as you can. Use `let` when you need to reassign a variable.
 
 ---
 
@@ -164,8 +164,9 @@ Write `const` as possible as you can. Use `let` when you need to reassign a vari
 
 ---
 
-## The component rules
+## UI component rules
 
+- You have to make UI components as simple as possible.
 - Component declaration should be function then use `export default`.
 
   ```ts
@@ -178,8 +179,8 @@ Write `const` as possible as you can. Use `let` when you need to reassign a vari
   export default function Comp() {}
   ```
 
-- When you think the component needs other files, place them in one folder, then export result component in `index` file. The folder name should have same name with the component's name.
-  ```
+- When you think the component needs other files, place them in one folder. Then export a result component in `index` file. The folder name should have same name with the component's name.
+  ```sh
   ├── edit-text
   │   ├── input.tsx
   │   ├── loading-indicator.tsx
@@ -237,7 +238,7 @@ Write `const` as possible as you can. Use `let` when you need to reassign a vari
   }
   ```
 
-- The component style should be fully customizable. Also, try to group style props to specify them in single object which gives advantage on simplifying style props.
+- The component style should be fully customizable. Also, try to place style props into single object to simplifying style props.
 
   ```ts
   type ClassNames = {
@@ -249,6 +250,27 @@ Write `const` as possible as you can. Use `let` when you need to reassign a vari
   interface Props {
     classNames?: ClassNames;
   }
+  ```
+
+- Try to offer `render` function. A user can customize a piece of the component with their own way.
+
+  ```ts
+  // A user can use leftElement like below
+  <Button
+    text="button text"
+    leftElement={<LikeIcon />}
+    rightElement={<LikeIcon />}
+    color="danger"
+  />
+
+  // with render function
+  <Button
+    text="button text"
+    leftElement={(props) => (
+      <div className="text-default-contrast w-48" {...props}><LikeIcon/></div>
+    )}
+    classNames={{contents: 'justify-start'}}
+  />
   ```
 
 ---
@@ -300,7 +322,7 @@ Write `const` as possible as you can. Use `let` when you need to reassign a vari
     )
   }
 
-  // or
+  // When more then 2 components in same file, You can declare props type like below
 
   type ChildrenAProps = {};
 
