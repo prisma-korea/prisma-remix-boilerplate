@@ -106,8 +106,6 @@
 
   // do
   <Foo hasValue={false} />
-
-  // do
   <Foo loading />
   ```
 
@@ -124,7 +122,6 @@
     return new Promise();
   }
 
-  // do
   async function readAsync() {
     await asyncWork();
 
