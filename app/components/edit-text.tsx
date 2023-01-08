@@ -1,8 +1,7 @@
-import type {DetailedHTMLProps, InputHTMLAttributes} from 'react';
+import type {DetailedHTMLProps, InputHTMLAttributes, ReactElement} from 'react';
+import {useEffect, useState} from 'react';
 
 import clsx from 'clsx';
-import {useEffect} from 'react';
-import {useState} from 'react';
 
 type ClassNames = {
   label?: string;
@@ -33,7 +32,7 @@ export function EditText({
   classNames,
   onSubmit,
   ...restProps
-}: Props) {
+}: Props): ReactElement {
   const [showError, setShowError] = useState(false);
   useEffect(() => {
     setShowError(true);
