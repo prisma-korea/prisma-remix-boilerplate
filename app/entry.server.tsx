@@ -1,4 +1,5 @@
 import {I18nextProvider, initReactI18next} from 'react-i18next';
+import {renderToPipeableStream, renderToString} from 'react-dom/server';
 
 import Backend from 'i18next-fs-backend';
 import type {EntryContext} from '@remix-run/node';
@@ -8,8 +9,6 @@ import {Response} from '@remix-run/node';
 import {createInstance} from 'i18next';
 import {i18nConfig} from './i18n';
 import {remixI18n} from './services/i18n.server';
-import {renderToPipeableStream} from 'react-dom/server';
-import {renderToString} from 'react-dom/server';
 import {resolve} from 'node:path';
 
 const ABORT_DELAY = 5000;
@@ -19,7 +18,7 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-) {
+): Promise<Response> {
   // First, we create a new instance of i18next so every request will have a
   // completely unique instance and not share any state
   const instance = createInstance();

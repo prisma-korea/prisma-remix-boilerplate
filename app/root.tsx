@@ -16,6 +16,7 @@ import {
 import {useCallback, useEffect, useState} from 'react';
 
 import type {CatchBoundaryComponent} from '@remix-run/react/dist/routeModules';
+import type {ReactElement} from 'react';
 import {json} from '@remix-run/node';
 import {remixI18n} from './services/i18n.server';
 import styles from './styles/app.css';
@@ -25,6 +26,7 @@ type LoaderData = {locale: string};
 
 export const loader: LoaderFunction = async ({request}) => {
   const locale = await remixI18n.getLocale(request);
+
   return json<LoaderData>({locale});
 };
 
@@ -41,8 +43,15 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1',
 });
 
-function Document({children, title}: {children: JSX.Element; title: string}) {
+function Document({
+  children,
+  title,
+}: {
+  children: JSX.Element;
+  title: string;
+}): ReactElement {
   type Brightness = 'light' | 'dark';
+
   const [brightness, setBrightness] = useState<Brightness | null>();
 
   const toggleTheme = useCallback((brightness: Brightness) => {
@@ -58,6 +67,7 @@ function Document({children, title}: {children: JSX.Element; title: string}) {
         window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
       toggleTheme('dark');
+
       return;
     }
 
@@ -102,7 +112,7 @@ function Document({children, title}: {children: JSX.Element; title: string}) {
   );
 }
 
-export default function App() {
+export default function App(): ReactElement {
   return (
     <Document title="Remix boilerplate">
       <Outlet />

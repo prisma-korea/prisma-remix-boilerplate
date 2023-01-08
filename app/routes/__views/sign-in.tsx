@@ -10,6 +10,7 @@ import {
 } from '~/utils/validators';
 
 import {EditText} from '../../components/edit-text';
+import type {ReactElement} from 'react';
 import {remixI18n} from '../../services/i18n.server';
 import {useTranslation} from 'react-i18next';
 
@@ -50,18 +51,21 @@ export const action: ActionFunction = async ({request}) => {
       : {}),
   };
 
-  if (Object.values(errors).some(Boolean))
+  if (Object.values(errors).some(Boolean)) {
     return json(
       {errors, fields: {email, password, displayName}, form: action},
       {status: 400},
     );
+  }
 
   switch (action) {
     case 'sign-in': {
       return await signIn({email, password});
     }
+
     case 'register': {
       displayName = displayName as string;
+
       return await register({email, password, displayName});
     }
     default:
@@ -69,7 +73,7 @@ export const action: ActionFunction = async ({request}) => {
   }
 };
 
-export default function SignIn() {
+export default function SignIn(): ReactElement {
   const trans = useTransition();
   const actionData = useActionData();
   const firstLoad = useRef(true);

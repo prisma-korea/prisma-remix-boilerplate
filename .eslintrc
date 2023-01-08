@@ -1,6 +1,4 @@
 {
-  "extends": ["@remix-run/eslint-config", "@remix-run/eslint-config/node"],
-  "rules": {
-    "object-curly-spacing": ["error", "never"]
-  }
+  "root": true,
+  "extends": ["@dooboo/eslint-config-remix"]
 }

@@ -1,10 +1,10 @@
 import {Form, useLoaderData} from '@remix-run/react';
+import {json, redirect} from '@remix-run/node';
 
 import type {LoaderFunction} from '@remix-run/node';
+import type {ReactElement} from 'react';
 import type {User} from '@prisma/client';
-import {json} from '@remix-run/node';
 import {prisma} from '~/utils/prisma.server';
-import {redirect} from '@remix-run/node';
 import {remixI18n} from '../../services/i18n.server';
 import {requireUserId} from '../../utils/auth.server';
 import {useTranslation} from 'react-i18next';
@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({request}) => {
   return json<LoaderData>({locale, title, user});
 };
 
-export default function Index() {
+export default function Index(): ReactElement {
   const {title, user} = useLoaderData<LoaderData>();
   const {t} = useTranslation();
 
